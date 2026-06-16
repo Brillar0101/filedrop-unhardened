@@ -1,0 +1,44 @@
+# File Drop — full stack on standard (unhardened) container images.
+# restart: always keeps every piece running 24/7 on the Linux host.
+#
+# Run with:  podman-compose up -d
+#
+# The DB password is read from the MYSQL_PASSWORD environment variable.
+# A demo default is provided for local use only. Set a real value before production:
+#   export MYSQL_PASSWORD='a-strong-secret'
+
+services:
+  db:
+    image: docker.io/library/mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-changeme-demo-only}
+      MYSQL_DATABASE: filedrop
+      MYSQL_USER: filedrop
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-changeme-demo-only}
+    volumes:
+      - db-data:/var/lib/mysql
+
+  app:
+    build: .
+    restart: always
+    environment:
+      DATABASE_URL: mysql://filedrop:${MYSQL_PASSWORD:-changeme-demo-only}@db:3306/filedrop
+    volumes:
+      - file-data:/data
+    depends_on:
+      - db
+
+  proxy:
+    image: docker.io/library/httpd:latest
+    restart: always
+    ports:
+      - "8091:80"
+    volumes:
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+    depends_on:
+      - app
+
+volumes:
+  db-data:
+  file-data:
