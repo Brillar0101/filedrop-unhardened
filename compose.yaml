@@ -35,7 +35,7 @@ services:
     ports:
       - "8091:80"
     volumes:
-      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro,z
     depends_on:
       - app
 

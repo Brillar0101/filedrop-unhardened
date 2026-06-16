@@ -50,7 +50,7 @@ podman run -d --name app --network "${NET}" --restart=always \
 echo ">> Starting httpd (proxy), exposed on host port 8091"
 podman run -d --name proxy --network "${NET}" --restart=always \
   -p 8091:80 \
-  -v "${APP_SRC}/httpd.conf":/usr/local/apache2/conf/httpd.conf:ro \
+  -v "${APP_SRC}/httpd.conf":/usr/local/apache2/conf/httpd.conf:ro,z \
   "${PROXY_IMAGE}"
 
 echo
