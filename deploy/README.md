@@ -1,6 +1,6 @@
 # Deploy File Drop on a Hummingbird VM (Unhardened Containers)
 
-This deploys the three-container File Drop stack on a **Fedora Hummingbird VM** — the same hardened OS used by the [filedrop-hummingbird](https://github.com/Brillar0101/filedrop-hummingbird) project. The only difference is the container images: this project uses standard Docker Hub images that have no `hi/*` hardened equivalents. This ensures an apples-to-apples comparison — same OS, different container-level security.
+This deploys the three-container File Drop stack on a **Fedora Hummingbird VM** — the same hardened OS used by the [filedrop-hummingbird-hardened](https://github.com/Brillar0101/filedrop-hummingbird-hardened) project. The only difference is the container images: this project uses standard Docker Hub images that have no `hi/*` hardened equivalents. This ensures an apples-to-apples comparison — same OS, different container-level security.
 
 > **Where this runs:** The VM build and boot step must run on a **Linux host with KVM** (it needs `qemu-kvm`, `libvirt`, `virt-install`). A Fedora workstation works perfectly. The Hummingbird disk image must already be built by the filedrop-hummingbird project.
 

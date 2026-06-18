@@ -2,7 +2,7 @@
 
 ## The project
 
-**File Drop** is the same file-upload service as [filedrop-hummingbird](https://github.com/Brillar0101/filedrop-hummingbird) — upload a file through a web page, get a download link back. The difference is the container images: this version uses standard Docker Hub images because the required software (Node.js, Apache httpd, MySQL) has no Hummingbird `hi/*` equivalent.
+**File Drop** is the same file-upload service as [filedrop-hummingbird-hardened](https://github.com/Brillar0101/filedrop-hummingbird-hardened) — upload a file through a web page, get a download link back. The difference is the container images: this version uses standard Docker Hub images because the required software (Node.js, Apache httpd, MySQL) has no Hummingbird `hi/*` equivalent.
 
 Both versions deploy on the same **Fedora Hummingbird Linux** VM. Same OS, same functionality, dramatically different container-level security.
 

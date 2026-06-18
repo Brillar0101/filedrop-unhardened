@@ -1,6 +1,6 @@
 # Architecture: File Drop on Standard Container Images (Unhardened)
 
-This document describes the architecture of the unhardened File Drop deployment. It mirrors the structure of the [filedrop-hummingbird](https://github.com/Brillar0101/filedrop-hummingbird) architecture document, but every component runs on standard, unhardened container images from Docker Hub.
+This document describes the architecture of the unhardened File Drop deployment. It mirrors the structure of the [filedrop-hummingbird-hardened](https://github.com/Brillar0101/filedrop-hummingbird-hardened) architecture document, but every component runs on standard, unhardened container images from Docker Hub.
 
 Both projects deploy on the same **Fedora Hummingbird Linux** host OS. The difference is entirely in the container images.
 
