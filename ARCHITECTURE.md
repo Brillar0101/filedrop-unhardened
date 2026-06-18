@@ -63,31 +63,7 @@ On a traditional Fedora server, you would install these same packages via `dnf` 
 
 ## 3. Deployment topology
 
-```
-Internet / LAN
-    |  :8091
-    v
-Apache httpd (httpd:latest)
-  |-- runs as root (default)
-  |-- full Apache + Debian userland
-  |-- no security headers
-    |  ProxyPass http://app:3000
-    v  (internal network)
-Express.js app (node:22)
-  |-- runs as root (default)
-  |-- full Node.js + npm + Debian userland
-  |-- writes to /data volume
-  |-- connects to db:3306
-    |
-    v
-MySQL (mysql:8)
-  |-- runs as mysql user
-  |-- /var/lib/mysql volume
-
-Volumes:
-  file-data -> /data (uploads)
-  db-data   -> /var/lib/mysql
-```
+![Deployment topology — httpd proxy on port 8091, Express.js app on node:22, MySQL 8, with file-data and db-data volumes](screenshots/deployment_topology_uh.png)
 
 Deployment (same Hummingbird OS as the hardened project):
 - **VM:** boot a Hummingbird VM (same disk image as the hardened project), deploy with plain podman
