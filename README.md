@@ -1,13 +1,6 @@
-# File Drop on Standard Container Images (Unhardened)
+# File Drop on Standard Container Images
 
-A file-upload service built on **standard Docker Hub container images**, deployed on a **Fedora Hummingbird Linux VM** — the same app and same host OS as [filedrop-hummingbird-hardened](https://github.com/Brillar0101/filedrop-hummingbird-hardened), but with container images from external repositories that have no Hummingbird equivalents.
-
-This project answers two questions:
-
-1. **What is the impact of using external container repositories?** Not every technology has a Hummingbird `hi/*` image. When you pull from Docker Hub, you inherit full OS distributions with hundreds of packages and the CVEs that come with them.
-2. **How does Fedora Hummingbird Linux still protect you?** Even with unhardened containers, the Hummingbird host OS provides an immutable root filesystem, atomic updates via `bootc`, instant rollback, and no host-level package manager. These OS-level protections limit the blast radius of a container-level compromise.
-
-See [`COMPARISON.md`](./COMPARISON.md) for the full side-by-side analysis with the hardened version.
+A file-upload service built on standard Docker Hub container images, deployed on a Fedora Hummingbird Linux VM. Same app and same host OS as [filedrop-hummingbird-hardened](https://github.com/Brillar0101/filedrop-hummingbird-hardened), but with container images from external repositories that have no Hummingbird `hi/*` equivalents.
 
 ## The stack
 
@@ -20,49 +13,9 @@ See [`COMPARISON.md`](./COMPARISON.md) for the full side-by-side analysis with t
 
 None of these images have a Hummingbird `hi/*` equivalent. That is the point.
 
-## How this differs from traditional Fedora
-
-On a traditional Fedora server, you would install these services directly on the host:
-
-```bash
-# Traditional Fedora — install on the host
-sudo dnf install nodejs mysql-server httpd
-npm install express multer mysql2
-sudo systemctl enable --now mysqld httpd
-```
-
-On Hummingbird, `dnf install` is blocked because the host root filesystem is read-only. Instead, everything runs as containers — but since there are no `hi/*` images for Node.js, Apache httpd, or MySQL, you pull from Docker Hub:
-
-```bash
-# Hummingbird — containers from external repositories
-podman pull docker.io/library/node:22
-podman pull docker.io/library/httpd:latest
-podman pull docker.io/library/mysql:8
-```
-
-The Hummingbird host OS protections (immutable root, atomic updates, no host package manager) still apply. But inside these containers, you have the full CVE exposure of standard Docker Hub images.
-
-## What's in this folder
-
-```
-filedrop-unhardened/
-  README.md            you are here
-  ARCHITECTURE.md      the full architecture (components, topology, security)
-  COMPARISON.md        side-by-side comparison with filedrop-hummingbird
-  app/server.js        the Express.js app + web UI
-  app/package.json     Node.js dependencies
-  client.py            command-line uploader
-  local_demo.py        stdlib-only local runner (preview the UI, no containers needed)
-  Dockerfile           single-stage build on node:22
-  compose.yaml         runs app + httpd + mysql, 24/7
-  httpd.conf           reverse proxy config
-  deploy/              deploy to a Hummingbird VM
-  tests/               unit tests (incl. XSS-escaping regression)
-```
-
 ## Three ways to run it
 
-### 1. See the UI right now (any machine, no containers)
+### See the UI right now (any machine, no containers)
 
 ```bash
 python3 local_demo.py
@@ -71,7 +24,7 @@ python3 local_demo.py
 
 A stdlib-only stand-in that shows the exact UI and real upload/download. For previewing only.
 
-### 2. Run on standard container images (Linux with Podman)
+### Run on standard container images (Linux with Podman)
 
 ```bash
 podman-compose up -d
@@ -80,25 +33,25 @@ podman-compose up -d
 
 Builds the app on `node:22` and runs the full stack on standard Docker Hub images.
 
-### 3. Deploy on a Hummingbird VM
+### Deploy on a Hummingbird VM
 
-See [`deploy/README.md`](./deploy/README.md). It boots a Hummingbird VM (same OS as the hardened project) and deploys the three-container stack on it. This ensures an apples-to-apples comparison — same OS, different container images.
+See [`deploy/README.md`](./deploy/README.md). Boots a Hummingbird VM (same OS as the hardened project) and deploys the three-container stack on it. Same OS, different container images.
 
 ## Verify the CVE impact
 
 Scan the app image to see the actual CVE count:
 
 ```bash
-grype filedrop-unhardened_app:latest
+grype filedrop-hummingbird-unhardened_app:latest
 ```
 
-Then compare with the hummingbird version to see the difference that distroless images make. See [`COMPARISON.md`](./COMPARISON.md) for the full breakdown and scanning commands.
+Then compare with the hardened version to see the difference distroless images make. See [`COMPARISON.md`](./COMPARISON.md) for the full breakdown.
 
 ## Docs
 
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — components, deployment topology, build pipeline, security model, and what Hummingbird Linux still provides
-- [`COMPARISON.md`](./COMPARISON.md) — side-by-side security comparison with filedrop-hummingbird
-- [`deploy/README.md`](./deploy/README.md) — deploy on a Hummingbird VM
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) - components, deployment topology, build pipeline, security model
+- [`COMPARISON.md`](./COMPARISON.md) - side-by-side security comparison with filedrop-hummingbird-hardened
+- [`deploy/README.md`](./deploy/README.md) - deploy on a Hummingbird VM
 
 ## Tests
 
@@ -111,7 +64,7 @@ Covers the HTML rendering, including the filename-escaping (XSS) safeguard.
 ## Notes
 
 - All images are from Docker Hub (`docker.io/library/`). None are Hummingbird images.
-- The Dockerfile is a **single-stage build** that runs as **root** and ships with npm, bash, and apt in the final image. This is the standard approach — and the reason for the high CVE count.
-- The httpd config deliberately omits security headers that the hummingbird project includes.
+- The Dockerfile is a single-stage build that runs as root and ships with npm, bash, and apt in the final image. That is the standard approach and the reason for the high CVE count.
+- The httpd config deliberately omits security headers that the hardened project includes.
 - Uploaded files go to the `/data` volume. `DATABASE_URL` is required from the environment.
-- Uploads are capped at 50 MB. The app has **no authentication** by design.
+- Uploads are capped at 50 MB. The app has no authentication by design.
