@@ -32,9 +32,9 @@ The File Drop UI works the same as the hardened version. Upload a file, get a do
 
 ## CVE scan results
 
-A grype scan of the unhardened app image shows 1,470 vulnerability matches including 62 critical. The hardened version shows a handful:
+A grype scan of the unhardened app image shows 1,479 vulnerability matches including 62 critical. The hardened version shows a handful:
 
-![grype scan of the unhardened app image showing 1,470 vulnerabilities with critical and high severity](screenshots/uh-grype-scan.png)
+![grype scan of the unhardened app image showing 1,479 vulnerabilities with critical and high severity](screenshots/uh-grype-scan.png)
 
 The vulnerabilities come from the base image, not the application code. Standard Docker Hub images ship hundreds of packages the app never uses, but each one can have CVEs.
 
