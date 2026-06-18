@@ -39,14 +39,6 @@ podman pull docker.io/library/mysql:8
 
 The CVE exposure inside these containers is similar to what you would have on a traditional server — full OS distributions with hundreds of packages. The difference is what happens at the host OS level (Section 7).
 
-This is the same Hummingbird OS running on the unhardened VM — `bootc status` confirms it:
-
-![bootc status on the unhardened VM — same Hummingbird OS image as the hardened project](screenshots/uh-bootc-status.png)
-
-And `dnf install` is still blocked, just like on the hardened VM — the host is read-only regardless of what containers run inside:
-
-![dnf install blocked — the bootc system is read-only even with unhardened containers](screenshots/uh-dnf-blocked.png)
-
 ---
 
 ## 2. Logical components
@@ -101,18 +93,6 @@ Deployment (same Hummingbird OS as the hardened project):
 - **VM:** boot a Hummingbird VM (same disk image as the hardened project), deploy with plain podman
 - **Container:** `podman-compose up -d` on any Linux host (for local testing)
 
-Once deployed, three containers run on standard Docker Hub images — notice `docker.io/library/` in every image name:
-
-![podman ps showing db (mysql:8), app (node), and proxy (httpd) running on Docker Hub images](screenshots/uh-podman-ps.png)
-
-The image sizes tell the story — the app image alone is 1.3 GB because it includes the full Debian userland:
-
-![podman images showing standard images at 831 MB to 1.3 GB compared to hi/* images at 51-196 MB](screenshots/uh-podman-images.png)
-
-The File Drop UI works the same as the hardened version — upload a file, get a download link:
-
-![File Drop web UI running on unhardened containers](screenshots/uh-ui.png)
-
 ---
 
 ## 4. Build pipeline
@@ -164,10 +144,6 @@ This section honestly describes the security posture of standard container image
 | Security headers | None | X-Content-Type-Options, X-Frame-Options, Referrer-Policy |
 | Root filesystem | Read-write | Read-only, immutable |
 | Image size | ~1 GB+ | ~100-200 MB |
-
-A grype scan of the unhardened app image shows the impact — 1,470 vulnerability matches including 62 critical, compared to the handful found in the hardened version:
-
-![grype scan of the unhardened app image showing 1,470 vulnerabilities with critical and high severity](screenshots/uh-grype-scan.png)
 
 ### What an attacker gets if they compromise a container
 
