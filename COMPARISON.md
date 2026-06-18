@@ -72,11 +72,7 @@ Hummingbird `hi/*` images are distroless: they contain only the language runtime
 
 A framework like FastAPI needs `pip` and build tools to install dependencies. The multi-stage build (`Containerfile`) solves this: a builder stage (`hi/python:3.11-builder`) installs dependencies, then the final image (`hi/python:3.11`) copies only the installed packages. The final image ships without `pip` or any build tooling.
 
-```
-Builder stage (hi/python:3.11-builder)   →   pip install --target=/app/deps
-                                              ↓ COPY deps only
-Final stage (hi/python:3.11, distroless)  →   app code + deps, nothing else
-```
+![Multi-stage build — builder stage installs deps with pip, final distroless stage gets only the app code and deps, nothing else](screenshots/multi-stage-builds.png)
 
 ### Non-root user
 
